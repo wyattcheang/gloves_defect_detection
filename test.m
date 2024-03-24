@@ -1,4 +1,4 @@
-orgImg = imread('gloves/leather/DRT-4.jpg');
+orgImg = imread('gloves/leather/DRT-1.jpg');
 
 grayImg = rgb2gray(orgImg);
 

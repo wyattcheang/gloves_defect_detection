@@ -46,7 +46,5 @@ classdef fn
             img = imadjust(inputImg, [0.3, 0.7], []);
         end
 
-        function 
-
     end
 end
