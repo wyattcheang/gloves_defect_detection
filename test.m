@@ -1,4 +1,6 @@
-orgImg = imread('gloves/leather/DRT-1.jpg');
+close all;
+
+orgImg = imread('gloves/leather/TRG-3.png');
 
 grayImg = rgb2gray(orgImg);
 
@@ -22,7 +24,7 @@ segementedImg = maskout(orgImg, finalMask);
 figure;
 subplot(331), imshow(orgImg), title('Original');
 subplot(332), imshow(grayImg), title('Gray');
-subplot(333), imshow(grayImg), title('Gray');
+subplot(333), imshow(stretchedImg), title('Strectched');
 subplot(334), imshow(edgeMask), title('Edge (Canny)');
 subplot(335), imshow(strelMask), title('Strel (linked the break lines');
 subplot(336), imshow(fillMask), title('Fill Line');
