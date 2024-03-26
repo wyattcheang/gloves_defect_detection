@@ -18,21 +18,85 @@ classdef fn
             end
         end
 
-        function mask=imgSegmentation(inputImg)
-            % convert to grayscale image
-            grayImg = rgb2gray(inputImg);
-
+        function [img, mask]=edgeSegmentation(img)
+            grayImg = rgb2gray(img);
+            
+            % apply Gaussian filtering for noise reduction
+            filteredImage = imgaussfilt(grayImg, 3);
+            
+            stretchedImg = imadjust(filteredImage, [0, 0.95]);
+            
+            % sharpen the segmented image using unsharp masking
+            sharpenedImage = imsharpen(stretchedImg, 'Amount', 1.5, 'Radius', 1, 'Threshold', 0);
+            
             % Get the edge mask
-            edgeMask = edge(grayImg, 'Canny');
+            edgeMask = edge(sharpenedImage, 'Canny');
+            
+            % use closing remove small line
             
             % use Morphological Opertaion to recontruct the line
             strelMask = imclose(edgeMask, strel("line", 10, 0));
+            strelMask = imclose(strelMask, strel("line", 4, 45));
+            strelMask = imclose(strelMask, strel("line", 10, 90));
+            strelMask = imclose(strelMask, strel("line", 4, 125));
+            
+            
             
             % fill the line edge
             fillMask = imfill(strelMask, "holes");
             
             % remove the small object
-            mask = bwareaopen(fillMask, 100);
+            finalMask = fn.dynamicBwareaopen(fillMask, 60000);
+            
+            % apply the mask
+            segementedImg = fn.maskout(img, finalMask);
+            
+
+            %TODO: remove after final tuning
+            figure;
+            subplot(231), imshow(img), title('Original')
+            subplot(232), imshow(grayImg), title('Gray');
+            subplot(233), imshow(filteredImage), title('Gaussian Filtered');
+            
+            subplot(234), imshow(stretchedImg), title('Strectched');
+            subplot(235), imshow(sharpenedImage), title('Sharpened');
+            subplot(236), imshow(edgeMask), title('Edge (Canny)');
+            
+            figure;
+            subplot(231), imshow(strelMask), title('Strel (linked the break lines');
+            subplot(232), imshow(fillMask), title('Fill Line');
+            subplot(233), imshow(finalMask), title('Final Mask');
+            subplot(234), imshow(segementedImg), title('Segemented');
+            img = segementedImg;
+            mask = finalMask;
+        end
+
+        function masked = maskout(src,mask)
+            masked = bsxfun(@times, src, cast(mask,class(src)));
+        end
+        
+        function finalMask = dynamicBwareaopen(inputImg, minSize)
+            % Initial call to bwareaopen
+            finalMask = bwareaopen(inputImg, minSize);
+        
+            % Check if final mask has at least one object
+            if any(finalMask(:))
+                return;  % No further processing needed
+            end
+        
+            % Iterate to find minimum size with at least one object
+            while minSize > 0
+                % Apply bwareaopen with updated minimum size
+                finalMask = bwareaopen(inputImg, minSize);
+                
+                % Check if final mask has at least one object
+                if any(finalMask(:))
+                    return;  % Stop iteration if at least one object is found
+                end
+                
+                % Reduce the minimum size for the next iteration
+                minSize = max(minSize - 100, 1);
+            end
         end
         
         % use to replicate the grayscale channe to form an RGB image to
@@ -46,5 +110,32 @@ classdef fn
             img = imadjust(inputImg, [0.3, 0.7], []);
         end
 
+        function [img,mask]=thresholdSegmentation(img)
+            grayImg=rgb2gray(img);
+            % apply Gaussian filtering for noise reduction
+            filteredImage = imgaussfilt(grayImg, 3);
+            
+            stretchedImg = imadjust(filteredImage, [0, 0.95]);
+            
+            % sharpen the segmented image using unsharp masking
+            sharpenedImg = imsharpen(stretchedImg, 'Amount', 1.5, 'Radius', 1, 'Threshold', 0);
+            
+            level=graythresh(sharpenedImg);
+            
+            mask = imcomplement(imbinarize(grayImg, level));
+
+            fillMask = imfill(mask, "holes");
+
+            mask = fn.dynamicBwareaopen(fillMask, 60000);
+
+            figure;
+            subplot(231), title('original'), imshow(img);
+            subplot(232), title('gray'), imshow(grayImg);
+            subplot(233), title('stretched Img'), imshow(stretchedImg);
+            subplot(234), title('sharpen Img'), imshow(sharpenedImg);
+            subplot(235), title('mask'), imshow(mask);
+            img = fn.maskout(img, mask);
+            subplot(236), title('applied mask'), imshow(img);
+        end
     end
 end
