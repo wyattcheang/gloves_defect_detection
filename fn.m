@@ -52,21 +52,21 @@ classdef fn
             segementedImg = fn.maskout(img, finalMask);
             
 
-            %TODO: remove after final tuning
-            figure;
-            subplot(231), imshow(img), title('Original')
-            subplot(232), imshow(grayImg), title('Gray');
-            subplot(233), imshow(filteredImage), title('Gaussian Filtered');
-            
-            subplot(234), imshow(stretchedImg), title('Strectched');
-            subplot(235), imshow(sharpenedImage), title('Sharpened');
-            subplot(236), imshow(edgeMask), title('Edge (Canny)');
-            
-            figure;
-            subplot(231), imshow(strelMask), title('Strel (linked the break lines');
-            subplot(232), imshow(fillMask), title('Fill Line');
-            subplot(233), imshow(finalMask), title('Final Mask');
-            subplot(234), imshow(segementedImg), title('Segemented');
+            % %TODO: remove after final tuning
+            % figure;
+            % subplot(231), imshow(img), title('Original')
+            % subplot(232), imshow(grayImg), title('Gray');
+            % subplot(233), imshow(filteredImage), title('Gaussian Filtered');
+            % 
+            % subplot(234), imshow(stretchedImg), title('Strectched');
+            % subplot(235), imshow(sharpenedImage), title('Sharpened');
+            % subplot(236), imshow(edgeMask), title('Edge (Canny)');
+            % 
+            % figure;
+            % subplot(231), imshow(strelMask), title('Strel (linked the break lines');
+            % subplot(232), imshow(fillMask), title('Fill Line');
+            % subplot(233), imshow(finalMask), title('Final Mask');
+            % subplot(234), imshow(segementedImg), title('Segemented');
             img = segementedImg;
             mask = finalMask;
         end

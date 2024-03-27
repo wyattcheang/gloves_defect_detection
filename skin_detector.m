@@ -17,6 +17,6 @@ binary_skin = imbinarize(skin_mask);
 cleaned_skin = bwareaopen(binary_skin, 100);
 final_skin = imfill(imdilate(cleaned_skin, strel('diamond', 4)), 'holes');
 
-imshow(final_skin);
+% imshow(final_skin);
 skin_mask = final_skin;
 end
