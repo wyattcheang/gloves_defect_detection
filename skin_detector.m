@@ -1,22 +1,26 @@
 function skin_mask = skin_detector(img)
+%% RGB -> YCbCr
+ycbcr_img = rgb2ycbcr(img);
 
-sz = size(img);
-r = 1; g = 2; b = 3; y = 1; u = 2; v = 3;
+% Separate Y, Cb, and Cr components
+y = ycbcr_img(:,:,1);
+cb = ycbcr_img(:,:,2);
+cr = ycbcr_img(:,:,3);
 
-% Convert to YUV color space
-yuv = zeros(sz);
-yuv(:,:,y) = (img(:,:,r) + 2.*img(:,:,g) + img(:,:,b)) / 4;
-yuv(:,:,u) = img(:,:,r) - img(:,:,g);
-yuv(:,:,v) = img(:,:,b) - img(:,:,g);
+%% Skin Detection
+% Define the lower and upper bounds of the skin color cluster
+lower = [78, 134];
+upper = [126, 172];
+% 85, 135
+% 135, 180
 
-% Skin detection
-skin_mask = (yuv(:,:,u) > 20 & yuv(:,:,v) < 74) .* 255;
+% Threshold YCbCr -> BW
+skin_mask = cb >= lower(1) & cb <= upper(1) & ...
+    cr >= lower(2) & cr <= upper(2);
 
-% Binarization and morphological operations
-binary_skin = imbinarize(skin_mask);
-cleaned_skin = bwareaopen(binary_skin, 100);
+%% Morphological operations
+cleaned_skin = bwareaopen(skin_mask, 100);
 final_skin = imfill(imdilate(cleaned_skin, strel('diamond', 4)), 'holes');
 
-% imshow(final_skin);
 skin_mask = final_skin;
 end
