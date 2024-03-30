@@ -1,3 +1,4 @@
+%% Performs glove detection in an input image using color segmentation based on k-means clustering
 function glove_mask = detect_glove(img)
 % function glove_mask = detect_glove(lab_img)
 

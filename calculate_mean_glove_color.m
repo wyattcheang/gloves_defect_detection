@@ -1,4 +1,5 @@
-function glove_mean_lab = calculate_mean_glove_color(lab_img, glove_mask)
+%% Computes the mean color of the glove region
+function glove_mean_rgb = calculate_mean_glove_color(lab_img, glove_mask)
 
 % Extract LAB channels
 L = lab_img(:,:,1);
@@ -33,10 +34,15 @@ fprintf('Mean color of the glove: L = %.2f, A = %.2f, B = %.2f\n', mean_L, mean_
 
 % Convert mean LAB color to RGB
 glove_mean_lab = [mean_L, mean_A, mean_B];
-glove_mean_lab = reshape(glove_mean_lab, [1, 1, 3]); % Reshape to 1x1x3 for broadcasting
 glove_mean_rgb = lab2rgb(glove_mean_lab);
 
-% Create a blank image with the same size as the original image
-result_image = repmat(uint8(glove_mean_rgb * 255), [size(lab_img, 1), size(lab_img, 2), 1]);
-figure('Name','Detect Glove Color'), imshow(result_image), title('Mean color (RGB)');
+% % Create a blank image with the same size as the original image
+% result_image = zeros(size(lab_img), 'uint8');
+% 
+% % Fill the image with the mean RGB color
+% result_image(:,:,1) = glove_mean_rgb(1) * 255;
+% result_image(:,:,2) = glove_mean_rgb(2) * 255;
+% result_image(:,:,3) = glove_mean_rgb(3) * 255;
+% 
+% figure('Name','Detect Glove Color'), imshow(result_image), title('Mean color (RGB)');
 end
