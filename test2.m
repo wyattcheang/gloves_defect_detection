@@ -1,77 +1,44 @@
-orgImg = imread('gloves/leather/DRT-3-Clean.jpg');
+close all;
 
-grayImg = rgb2gray(orgImg);
+% Threshold Seg
+% tearing-2-good
 
-% apply Gaussian filtering for noise reduction
-filteredImage = imgaussfilt(grayImg, 3);
+%% Dispoable
+org_img = imread('gloves/disposable/FNE-3.jpg');
+% org_img = imread('gloves/disposable/final/tearing-2-good.jpg');
 
-stretchedImg = imadjust(filteredImage, [0, 0.95]);
+%% Cotton
+% Tearing
+% org_img = imread('gloves/cotton/1.jpg');
+% org_img = imread('gloves/cotton/6.jpg');
 
-% sharpen the segmented image using unsharp masking
-sharpenedImage = imsharpen(stretchedImg, 'Amount', 1.5, 'Radius', 1, 'Threshold', 0);
+% Stain
+% org_img = imread('gloves/cotton/2.jpg');
 
-% Get the edge mask
-edgeMask = edge(sharpenedImage, 'Canny');
-
-% use closing remove small line
-
-% use Morphological Opertaion to recontruct the line
-strelMask = imclose(edgeMask, strel("line", 10, 0));
-strelMask = imclose(strelMask, strel("line", 4, 45));
-strelMask = imclose(strelMask, strel("line", 10, 90));
-strelMask = imclose(strelMask, strel("line", 4, 125));
+%% Leather
+% org_img = imread('gloves/leather/TRG-1.png');
+% org_img = imread('gloves/silicone/dirty_and_stain_1.jpeg');
 
 
+%%
+[img, mask] = fn.edgeSegmentation(org_img);
+% [img, mask] = fn.thresholdSegmentation(org_img);
+% [img, mask] = edge_segmentation(org_img);
 
-% fill the line edge
-fillMask = imfill(strelMask, "holes");
+finger_counter(img);
 
-% remove the small object
-finalMask = dynamicBwareaopen(fillMask, 60000);
-
-% apply the mask
-segementedImg = maskout(orgImg, finalMask);
-
-figure;
-subplot(231), imshow(orgImg), title('Original')
-subplot(232), imshow(grayImg), title('Gray');
-subplot(233), imshow(filteredImage), title('Gaussian Filtered');
-
-subplot(234), imshow(stretchedImg), title('Strectched');
-subplot(235), imshow(sharpenedImage), title('Sharpened');
-subplot(236), imshow(edgeMask), title('Edge (Canny)');
-
-figure;
-subplot(231), imshow(strelMask), title('Strel (linked the break lines');
-subplot(232), imshow(fillMask), title('Fill Line');
-subplot(233), imshow(finalMask), title('Final Mask');
-subplot(234), imshow(segementedImg), title('Segemented');
-
-function masked = maskout(src,mask)
-    masked = bsxfun(@times, src, cast(mask,class(src)));
-end
-
-function finalMask = dynamicBwareaopen(inputImg, minSize)
-    % Initial call to bwareaopen
-    finalMask = bwareaopen(inputImg, minSize);
-
-    % Check if final mask has at least one object
-    if any(finalMask(:))
-        return;  % No further processing needed
-    end
-
-    % Iterate to find minimum size with at least one object
-    while minSize > 0
-        % Apply bwareaopen with updated minimum size
-        finalMask = bwareaopen(inputImg, minSize);
-        
-        % Check if final mask has at least one object
-        if any(finalMask(:))
-            return;  % Stop iteration if at least one object is found
-        end
-        
-        % Reduce the minimum size for the next iteration
-        minSize = max(minSize - 100, 1);
-    end
-end
-
+% lab_img = rgb2lab(img);
+% 
+% % Extract glove segment
+% glove_mask = detect_glove(img);
+% % glove_mask = detect_glove(lab_img);
+% 
+% % Get average clove color
+% glove_mean_rgb = calculate_mean_glove_color(lab_img, glove_mask);
+% 
+% % Detect defects - stain & tearing
+% [stain_bboxes, tearing_bboxes] = detect_stain_tearing(img, glove_mean_rgb, 35, 250);
+% 
+% % Highlight defects according to categories
+% % TODO: maybe this can be used to display final image in our app
+% highlight_defects(org_img, stain_bboxes, tearing_bboxes);
