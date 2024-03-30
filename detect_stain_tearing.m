@@ -3,13 +3,13 @@
 % ii) thresholding
 % iii) morphological
 % iv) connected component analysis.
-function [stain_bboxes, tearing_bboxes] = detect_stain_tearing(img, ...
-    glove_mean_rgb, deltaE_threshold, min_area_threshold)
+function [stain_bboxes, tearing_bboxes] = detect_stain_tearing(img, glove_mean_rgb)
 
 % Compute color difference (Delta E) between image and reference color
 de = deltaE(img, glove_mean_rgb);
 
 % Apply threshold to Delta E values to segment the image
+deltaE_threshold = 35;
 defect_free_mask = de < deltaE_threshold;
 
 % Apply the mask to original mask to get defects
@@ -36,10 +36,13 @@ stain_bboxes = [];
 tearing_count = 0;
 stain_count = 0;
 
+min_area_threshold = 250;
+max_area_threshold = 1000;
+
 % Iterate through connected components
 for i = 1:cc.NumObjects
     % Remove small objects based on the area threshold
-    if stats(i).Area < min_area_threshold
+    if stats(i).Area < min_area_threshold || stats(i).Area > max_area_threshold
         defects_img(cc.PixelIdxList{i}) = 0; % Set pixels of small object to background
         continue; % Skip classification for this region
     end

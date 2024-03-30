@@ -4,12 +4,12 @@ close all;
 % tearing-2-good
 
 %% Dispoable
-org_img = imread('gloves/disposable/FNE-3.jpg');
-% org_img = imread('gloves/disposable/final/tearing-2-good.jpg');
+% org_img = imread('gloves/disposable/FNE-3.jpg');
+org_img = imread('gloves/disposable/final/tearing-1-good.jpg');
 
 %% Cotton
 % Tearing
-% org_img = imread('gloves/cotton/1.jpg');
+org_img = imread('gloves/cotton/2.jpg');
 % org_img = imread('gloves/cotton/6.jpg');
 
 % Stain
@@ -25,20 +25,19 @@ org_img = imread('gloves/disposable/FNE-3.jpg');
 % [img, mask] = fn.thresholdSegmentation(org_img);
 % [img, mask] = edge_segmentation(org_img);
 
-finger_counter(img);
+fne_bboxes = detect_finger_not_enough(img);
 
-% lab_img = rgb2lab(img);
-% 
-% % Extract glove segment
-% glove_mask = detect_glove(img);
-% % glove_mask = detect_glove(lab_img);
-% 
-% % Get average clove color
-% glove_mean_rgb = calculate_mean_glove_color(lab_img, glove_mask);
-% 
-% % Detect defects - stain & tearing
-% [stain_bboxes, tearing_bboxes] = detect_stain_tearing(img, glove_mean_rgb, 35, 250);
-% 
-% % Highlight defects according to categories
-% % TODO: maybe this can be used to display final image in our app
-% highlight_defects(org_img, stain_bboxes, tearing_bboxes);
+lab_img = rgb2lab(img);
+
+% Extract glove segment
+glove_mask = detect_glove(img);
+% glove_mask = detect_glove(lab_img);
+
+% Get average clove color
+glove_mean_rgb = calculate_mean_glove_color(lab_img, glove_mask);
+
+% Detect defects - stain & tearing
+[stain_bboxes, tearing_bboxes] = detect_stain_tearing(img, glove_mean_rgb);
+
+% Highlight defects according to categories
+highlight_defects(org_img, stain_bboxes, tearing_bboxes, fne_bboxes);
