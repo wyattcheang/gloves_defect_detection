@@ -1,6 +1,6 @@
 function fingernum = finger_counter(img)
 % Exposed Finger Extraction
-skin_mask = skin_detector(img);
+skin_mask = detect_skin(img);
 
 % Accept size within 1000 and 50000 pixels (finger size)
 sizeThreshold = [1000, 50000];
