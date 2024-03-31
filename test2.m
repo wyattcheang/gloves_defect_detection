@@ -4,7 +4,7 @@ close all;
 % tearing-2-good
 
 %% Dispoable
-% org_img = imread('gloves/disposable/final/tearing-2-good.png');
+org_img = imread('gloves/disposable/final/tearing-2-good.png');
 
 %% Cotton
 % Tearing
@@ -18,12 +18,13 @@ close all;
 % org_img = imread('gloves/leather/TRG-1.png');
 
 %% Rubber ??
-org_img = imread('gloves/rubber/dirty.jpg');
+% org_img = imread('gloves/rubber/dirty.jpg');
 
 %% Main
-img = fn.preprocessing(org_img);
-[img, mask] = fn.edgeSegmentation(img);
-%[img, mask] = fn.thresholdSegmentation(org_img);
+gray_img = fn.preprocessing(org_img);
+
+[img, mask] = fn.edge_segmentation(org_img, gray_img);
+%[img, mask] = fn.threshold_segmentation(org_img, gray_img);
 lab_img = rgb2lab(img);
 object_area = bwarea(mask);
 

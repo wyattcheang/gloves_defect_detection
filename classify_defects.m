@@ -42,37 +42,41 @@ for i = 1:cc.NumObjects
     h = bbox(5);
 
     object_mask = ismember(labelmatrix(cc), i);
+    object_region = defects_img .* uint8(object_mask);
     % Check if the connected component intersects with the skin color mask
     if any(skin_mask_rgb(cc.PixelIdxList{i}))
-        object_mask = ismember(labelmatrix(cc), i);
-        % Extract the region corresponding to the current object from the original image
-        object_region = defects_img .* uint8(object_mask);
-    
-        % Apply the mask to the object region
-        masked_object_region = object_region .* uint8(finger_mask);
-       
+        
         % Check for overlap
-        overlap = any(masked_object_region(:) ~= 0);
-        if overlap
+        if is_overlapped(object_region, finger_mask)  % Finger Not Enough
             fne_count = fne_count + 1;
             fne_bboxes(fne_count, :) = [x, y, w, h];
         else
+            % Check circularity (YES-> holes, NO -> tearing)
         end
     else
-        object_region = defects_img .* uint8(object_mask);
+        % TODO: remove
         imshow(object_region);
         stain_count = stain_count + 1;
         stain_bboxes(stain_count, :) = [x, y, w, h]; % Add to stain regions
+
+        % TODO: complete the logic
+        % if is_stained
+        %     stain_count = stain_count + 1;
+        %     stain_bboxes(stain_count, :) = [x, y, w, h]; % Add to stain regions
+        % else 
+        %     dirty_count = dirty_count + 1;
+        %     dirty_bboxes(dirty_count, :) = [x, y, w, j];
+        % end
     end
 end
 
 fprintf('stain_count = %d, tearing_count = %d, fne_count = %d\n', stain_count, tearing_count, fne_count);
 end
 
-
-function stain = is_stained()
-end
-function dirt = is_dirty()
-end
-function stain = is_stain()
+function overlap = is_overlapped(object_region, finger_mask)
+    % Apply the mask to the object region
+    masked_object_region = object_region .* uint8(finger_mask);
+   
+    % Check for overlap
+    overlap = any(masked_object_region(:) ~= 0);
 end
