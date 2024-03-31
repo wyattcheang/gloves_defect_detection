@@ -39,56 +39,57 @@ classdef fn
             end
         end
 
-        function [img, mask]=edgeSegmentation(img)
-            grayImg = rgb2gray(img);
+        function [img] = preprocessing(img)
+            % change to Gray Scale Image
+            gray_img = rgb2gray(img);
 
             % apply Gaussian filtering for noise reduction
-            filteredImage = imgaussfilt(grayImg, 3);
+            filtered_img = imgaussfilt(gray_img, 3);
 
-            stretchedImg = imadjust(filteredImage, [0, 0.95]);
+            % 
+            stretched_img = imadjust(filtered_img, [0, 0.95]);
 
             % sharpen the segmented image using unsharp masking
-            sharpenedImage = imsharpen(stretchedImg, 'Amount', 1.5, 'Radius', 1, 'Threshold', 0);
+            sharpened_img = imsharpen(stretched_img, 'Amount', 1.5, 'Radius', 1, 'Threshold', 0);
 
+            img = sharpened_img;
+
+            % TODO: remove
+            figure('Name', 'Preprocessing');
+            subplot(221), imshow(gray_img), title('Gray');
+            subplot(222), imshow(filtered_img), title('Gaussian Filtered');
+            subplot(223), imshow(stretched_img), title('Strectched');
+            subplot(224), imshow(sharpened_img), title('Sharpened');
+        end
+
+        function [img, mask]=edgeSegmentation(img)
             % Get the edge mask
-            edgeMask = edge(sharpenedImage, 'Canny');
-
-            % use closing remove small line
+            edge_mask = edge(img, 'Canny');
 
             % use Morphological Opertaion to recontruct the line
-            strelMask = imclose(edgeMask, strel("line", 10, 0));
-            strelMask = imclose(strelMask, strel("line", 4, 45));
-            strelMask = imclose(strelMask, strel("line", 10, 90));
-            strelMask = imclose(strelMask, strel("line", 4, 125));
-
-
+            morph_mask = imclose(edge_mask, strel("line", 10, 0));
+            morph_mask = imclose(morph_mask, strel("line", 6, 45));
+            morph_mask = imclose(morph_mask, strel("line", 10, 90));
+            morph_mask = imclose(morph_mask, strel("line", 6, 125));
 
             % fill the line edge
-            fillMask = imfill(strelMask, "holes");
+            filled_mask = imfill(morph_mask, "holes");
 
             % remove the small object
-            finalMask = fn.dynamicBwareaopen(fillMask, 60000);
+            final_mask = fn.dynamicBwareaopen(filled_mask, 60000);
 
             % apply the mask
-            segementedImg = fn.maskout(img, finalMask);
+            segemented_img = fn.maskout(img, final_mask);
 
-            % %TODO: remove after final tuning
-            % figure('Name', 'Preprocessing');
-            % subplot(231), imshow(img), title('Original')
-            % subplot(232), imshow(grayImg), title('Gray');
-            % subplot(233), imshow(filteredImage), title('Gaussian Filtered');
-            %
-            % subplot(234), imshow(stretchedImg), title('Strectched');
-            % subplot(235), imshow(sharpenedImage), title('Sharpened');
-            % subplot(236), imshow(edgeMask), title('Edge (Canny)');
-            %
-            % figure;
-            % subplot(231), imshow(strelMask), title('Strel (linked the break lines');
-            % subplot(232), imshow(fillMask), title('Fill Line');
-            % subplot(233), imshow(finalMask), title('Final Mask');
-            % subplot(234), imshow(segementedImg), title('Segemented');
-            img = segementedImg;
-            mask = finalMask;
+            % TODO: remove
+            figure;
+            subplot(231), imshow(edge_mask), title('Edge (Canny)');
+            subplot(232), imshow(morph_mask), title('Strel (linked the break lines');
+            subplot(233), imshow(filled_mask), title('Fill Line');
+            subplot(234), imshow(final_mask), title('Final Mask');
+            subplot(235), imshow(segemented_img), title('Segemented');
+            img = segemented_img;
+            mask = final_mask;
         end
 
         function masked = maskout(src,mask)
