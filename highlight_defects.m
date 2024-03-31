@@ -1,8 +1,8 @@
 %% Provides a visual representation of the detected defects on the original image
 
-function highlight_defects(org_img, stain_bboxes, tearing_bboxes, fne_bboxes)
+function highlighted_img = highlight_defects(org_img, stain_bboxes, tearing_bboxes, fne_bboxes)
 
-figure('Name', 'Final Image'), imshow(org_img);
+figure('Name', 'Final Image'), imshow(org_img), title('Detected Defects');
 hold on;
 
 % Draw rectangles and add text labels for stain regions
@@ -45,4 +45,12 @@ for i = 1:size(fne_bboxes, 1)
 end
 
 hold off;
+
+% Capture the frame and store it as the highlighted image
+highlighted_img = getframe(gcf);
+highlighted_img = highlighted_img.cdata;
+
+% Close the figure
+% close(gcf);
+
 end
