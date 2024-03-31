@@ -2,9 +2,10 @@
 
 function highlighted_img = highlight_defects(org_img, stain_bboxes, tearing_bboxes, fne_bboxes)
 
-figure('Name', 'Final Image'), imshow(org_img), title('Detected Defects');
-hold on;
+figure;
+imshow(org_img);
 
+hold on;
 % Draw rectangles and add text labels for stain regions
 for i = 1:size(stain_bboxes, 1)
     % Get bounding box coordinates
@@ -44,12 +45,11 @@ for i = 1:size(fne_bboxes, 1)
     text(x, y-10, 'Finger Not Enough', 'Color', 'y', 'FontSize', 12, 'FontWeight', 'bold');
 end
 
-hold off;
-
 % Capture the frame and store it as the highlighted image
 highlighted_img = getframe(gcf);
 highlighted_img = highlighted_img.cdata;
 
+hold off;
 % Close the figure
 % close(gcf);
 

@@ -20,5 +20,5 @@ subplot(221), imshow(img), title('Original Image');
 subplot(222), imshow(de, []), title('Delta E');
 subplot(223), imshow(defect_free_mask), title('Defects free mask');
 subplot(224), imshow(defects_img), title('Defects image');
-
+hold off;
 end
