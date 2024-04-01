@@ -4,7 +4,7 @@ close all;
 % tearing-2-good
 
 %% Dispoable
-org_img = imread('gloves/disposable/final/tearing-2-good.png');
+org_img = imread('gloves/disposable/final/tearing-1-good.jpg');
 
 %% Cotton
 % Tearing

@@ -2,12 +2,22 @@ classdef fn
     methods (Static)
         % TODO: Remove unused functions
 
-        function img = gloves_defects_detection(inputImg)
+        function img = gloves_defects_detection(input_img)
             close all;
             
-            [img, ~] = fn.edgeSegmentation(inputImg);
+            % image pre-processing
+            gray_img = fn.preprocessing(input_img);
+           
+            % image segmentation
+            [img, mask] = fn.edge_segmentation(input_img, gray_img);
+
+            % Getting the area of the object
+            object_area = bwarea(mask);
 
             lab_img = rgb2lab(img);
+
+            % Palm Finger Extraction
+            [plam_mask, finger_mask] = part_extraction(mask);
 
             % Extract glove segment
             glove_mask = detect_glove(img);
@@ -19,11 +29,10 @@ classdef fn
             [defects_img, defect_free_mask] = detect_defects(img, glove_mean_rgb);
 
             % Classify defects - stain / tearing / finger not enough
-            [stain_bboxes, tearing_bboxes, fne_bboxes] = classify_defects(defects_img, defect_free_mask);
+            [stain_bboxess, tearing_bboxes, fne_bboxes] = classify_defects(defects_img, finger_mask, object_area);
 
             % Highlight defects according to categories
-            img = highlight_defects(inputImg, stain_bboxes, tearing_bboxes, fne_bboxes);
-
+            img = highlight_defects(input_img, stain_bboxess, tearing_bboxes, fne_bboxes);
         end
 
         function img = img2gray(inputImg)
@@ -73,6 +82,8 @@ classdef fn
 
             % apply the mask
             img = fn.maskout(org_ing, mask);
+
+            subplot
         end
 
         % use to replicate the grayscale channe to form an RGB image to

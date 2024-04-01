@@ -7,10 +7,13 @@ skin_mask = detect_skin(defects_img);
 skin_mask_rgb = repmat(skin_mask, [1, 1, size(defects_img, 3)]);
 
 % Perform connected component analysis
-cc = bwconncomp(defects_img);
+gray_img = rgb2gray(defects_img);
+binary_img = gray_img ~= 0;
+cc = bwconncomp(binary_img);
 
 % Compute the properties of each connected component
-stats = regionprops(cc, 'Area', 'BoundingBox');
+stats = regionprops(cc, 'Area', 'Perimeter', 'BoundingBox');
+disp([stats.Area])
 
 % Initialize lists to store defects regions
 stain_bboxes = [];
@@ -25,7 +28,7 @@ tearing_count = 0;  % larger area, low ciularity, not around the finger area, si
 fne_count = 0;  % skin color, around the finger area
 
 % TODO: change to dynamic
-min_area_threshold = object_area * 0.01;
+min_area_threshold = object_area * 0.005;
 
 % Iterate through connected components
 for i = 1:cc.NumObjects
@@ -38,8 +41,8 @@ for i = 1:cc.NumObjects
     bbox = stats(i).BoundingBox;
     x = bbox(1);
     y = bbox(2);
-    w = bbox(4);
-    h = bbox(5);
+    w = bbox(3);
+    h = bbox(4);
 
     object_mask = ismember(labelmatrix(cc), i);
     object_region = defects_img .* uint8(object_mask);
@@ -55,6 +58,8 @@ for i = 1:cc.NumObjects
         end
     else
         % TODO: remove
+        figure;
+        subplot(111);
         imshow(object_region);
         stain_count = stain_count + 1;
         stain_bboxes(stain_count, :) = [x, y, w, h]; % Add to stain regions
