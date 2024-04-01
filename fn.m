@@ -57,7 +57,7 @@ classdef fn
 
         function [img, mask]=edge_segmentation(org_ing, gray_img)
             % Get the edge mask
-            edge_mask = edge(gray_img, 'Canny');
+            edge_mask = edge(gray_img, 'canny');
 
             % use Morphological Opertaion to recontruct the line
             morph_mask = imclose(edge_mask, strel("line", 10, 0));
@@ -69,13 +69,10 @@ classdef fn
             filled_mask = imfill(morph_mask, "holes");
 
             % remove the small object
-            final_mask = fn.dynamic_bwareaopen(filled_mask, 60000);
+            mask = fn.dynamic_bwareaopen(filled_mask, 60000);
 
             % apply the mask
-            segemented_img = fn.maskout(org_ing, final_mask);
-
-            img = segemented_img;
-            mask = final_mask;
+            img = fn.maskout(org_ing, mask);
         end
 
         % use to replicate the grayscale channe to form an RGB image to

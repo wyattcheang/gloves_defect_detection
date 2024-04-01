@@ -10,7 +10,7 @@ skin_mask_rgb = repmat(skin_mask, [1, 1, size(defects_img, 3)]);
 cc = bwconncomp(defects_img);
 
 % Compute the properties of each connected component
-stats = regionprops(cc, 'Area', 'BoundingBox', 'Circularity');
+stats = regionprops(cc, 'Area', 'BoundingBox');
 
 % Initialize lists to store defects regions
 stain_bboxes = [];
