@@ -31,11 +31,7 @@ end
 % Extract the largest segmented region (glove segment)
 glove_mask = ~segment_masks{largest_segment_idx};
 
-figure('Name','Kmeans For Color Segmentation');
-subplot(221), imshow(img), title('Original')
-subplot(222), imshow(B2), title("Labeled Image a*b*")
-subplot(223), imshow(cluster1), title("Objects in Cluster 1");
-subplot(224), imshow(cluster2), title("Objects in Cluster 2");
-imshow(glove_mask), title('Glove Mask');
-
+img_titles = {'Original', 'Labeled Image a*b*', 'Objects in Cluster 1', 'Objects in Cluster 2', 'Glove Mask'};
+imgs = {img, B2, cluster1, cluster2, glove_mask};
+fn.auto_plot_images('Kmeans For Color Segmentation', img_titles, imgs);
 end

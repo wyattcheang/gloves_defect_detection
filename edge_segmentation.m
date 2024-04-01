@@ -1,54 +1,24 @@
-function [img, mask] = edge_segmentation(img)
-grayImg = rgb2gray(img);
+function [img, mask]=edge_segmentation(org_ing, gray_img)
+    % Get the edge mask
+    edge_mask = edge(gray_img, 'canny');
 
-% Adaptive histogram equalization for contrast enhancement
-adapthisteqImg = adapthisteq(grayImg);
+    % use Morphological Opertaion to recontruct the line
+    morph_mask = imclose(edge_mask, strel("line", 6, 0));
+    morph_mask = imclose(morph_mask, strel("line", 6, 45));
+    morph_mask = imclose(morph_mask, strel("line", 6, 90));
+    morph_mask = imclose(morph_mask, strel("line", 6, 125));
 
-% apply Gaussian filtering for noise reduction
-filteredImage = imgaussfilt(adapthisteqImg, 3);
+    % fill the line edge
+    filled_mask = imfill(morph_mask, "holes");
 
-% Laplacian of Gaussian (LoG) for edge enhancement
-edgeEnhancedImg = edge(filteredImage, 'log');
+    % remove the small object
+    mask = fn.dynamic_bwareaopen(filled_mask, 60000);
 
-% Get the edge mask
-edgeMask = edge(edgeEnhancedImg, 'Canny');
+    % apply the mask
+    img = fn.applied_mask(org_ing, mask);
 
-% Refinement of edge mask using morphological operations
-strelMask = imclose(edgeMask, strel('disk', 5));
-strelMask = imclose(strelMask, strel("line", 4, 45));
-strelMask = imfill(strelMask, 'holes');
-strelMask = bwareaopen(strelMask, 1000); % Remove small objects
-
-% % Adaptive morphological operations based on local characteristics
-% adaptiveStrelMask = adaptthresh(uint8(strelMask));
-% adaptiveStrelMask = bwareaopen(adaptiveStrelMask, 1000); % Remove small objects
-
-% fill the line edge
-fillMask = imfill(strelMask, 'holes');
-
-% remove the small object
-finalMask = fn.dynamicBwareaopen(fillMask, 60000);
-
-% apply the mask
-segmentedImg = fn.maskout(img, finalMask);
-
-% Display intermediate results (optional)
-figure;
-subplot(231), imshow(img), title('Original')
-subplot(232), imshow(grayImg), title('Gray');
-subplot(233), imshow(adapthisteqImg), title('Adaptive Histogram Equalization');
-
-subplot(234), imshow(filteredImage), title('Gaussian Filtered');
-subplot(235), imshow(edgeEnhancedImg), title('Edge Enhanced (LoG)');
-subplot(236), imshow(edgeMask), title('Edge (Canny)');
-
-figure;
-subplot(231), imshow(strelMask), title('Refined Edge Mask');
-% subplot(232), imshow(adaptiveStrelMask), title('Adaptive Morphological Operations');
-subplot(233), imshow(fillMask), title('Fill Line');
-subplot(234), imshow(finalMask), title('Final Mask');
-subplot(235), imshow(segmentedImg), title('Segmented');
-
-img = segmentedImg;
-mask = finalMask;
+    img_titles = {'Edge Mask', 'Morph Mask', 'Filled Mask','Removed Small Objects', 'Applied Mask'};
+    imgs = {edge_mask, morph_mask, filled_mask, mask, img};
+    fn.auto_plot_images('Edge Segmentation', img_titles, imgs);
 end
+

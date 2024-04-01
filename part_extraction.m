@@ -26,8 +26,7 @@ sizeThreshold = largest_finger_area * 0.3;
 fprintf('\nsizeThreshold = %d', sizeThreshold);
 finger_mask = bwpropfilt(fingers, 'Area', [sizeThreshold Inf]);
 
-figure('Name', 'Palm Detection');
-subplot(131), imshow(refined_mask), title('Defects Free Mask');
-subplot(132), imshow(palm_mask), title('Palm Mask');
-subplot(133), imshow(finger_mask), title('Finger Image');
+img_titles = {'Refined Mask', 'Palm Mask', 'Finger Mask'};
+imgs = {refined_mask, palm_mask, finger_mask};
+fn.auto_plot_images('Palm Detection', img_titles, imgs);
 end

@@ -15,10 +15,7 @@ defects_img = img .* uint8(~defect_free_mask);
 % Morphology operations to enhance the defects_img
 defects_img = imopen(defects_img, strel('disk', 3));
 
-figure('Name', 'Delta E for Defects Detection');
-subplot(221), imshow(img), title('Original Image');
-subplot(222), imshow(de, []), title('Delta E');
-subplot(223), imshow(defect_free_mask), title('Defects free mask');
-subplot(224), imshow(defects_img), title('Defects image');
-hold off;
+img_titles = {'Original Image', 'Delta E', 'Defects free mask', 'Defects image'};
+imgs = {img, de, defect_free_mask, defects_img};
+fn.auto_plot_images('Delta E for Defects Detection', img_titles, imgs);
 end
