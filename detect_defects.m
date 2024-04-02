@@ -6,7 +6,7 @@ function [defects_img, defect_free_mask] = detect_defects(img, glove_mean_rgb)
 de = deltaE(img, glove_mean_rgb);
 
 % Apply threshold to Delta E values to segment the image
-deltaE_threshold = 35;
+deltaE_threshold = 25;
 defect_free_mask = de < deltaE_threshold;
 
 % Apply the mask to original mask to get defects

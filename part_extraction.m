@@ -19,10 +19,9 @@ fingers = imopen(finger_mask, strel('disk', round(palm_kernel_radius/5))); % Get
 fingers = imbinarize(fingers);
 
 stats = regionprops(fingers, 'Area', 'Centroid');
-disp([stats.Area])
 largest_finger_area = max([stats.Area]);
 
-sizeThreshold = largest_finger_area * 0.3;
+sizeThreshold = largest_finger_area * 0.2;
 fprintf('\nsizeThreshold = %d', sizeThreshold);
 finger_mask = bwpropfilt(fingers, 'Area', [sizeThreshold Inf]);
 

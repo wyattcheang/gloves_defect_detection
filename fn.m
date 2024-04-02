@@ -29,7 +29,7 @@ classdef fn
             [defects_img, ~] = detect_defects(img, glove_mean_rgb);
 
             % Classify defects - stain / tearing / finger not enough
-            [defect_names, defect_boxes] = classify_defects(defects_img, palm_mask, finger_mask, object_area);
+            [defect_names, defect_boxes] = classify_defects(org_img, defects_img, palm_mask, finger_mask, object_area);
 
             % Highlight defects according to categories
             img = highlight_defects(org_img, defect_names, defect_boxes);
@@ -48,9 +48,18 @@ classdef fn
             end
         end
 
+        % function img = applied_mask(src, mask)
+        %     img = bsxfun(@times, src, cast(mask,class(src)));
+        % end
+
         function img = applied_mask(src, mask)
-            img = bsxfun(@times, src, cast(mask,class(src)));
+            % Convert the mask to the same class as the source image
+            mask = cast(mask, class(src));
+            
+            % Apply the mask to the source image
+            img = bsxfun(@times, src, mask);
         end
+
 
         function final_mask = dynamic_bwareaopen(input_img, min_size)
             % Initial call to bwareaopen
@@ -77,7 +86,6 @@ classdef fn
         end
 
         function auto_plot_images(figure_name, image_titles, images)
-            
             % Create a new figure with the specified name
             figure('Name', figure_name);
             
@@ -89,9 +97,17 @@ classdef fn
             % Plot each image with its title
             for i = 1:num_images
                 subplot(num_rows, num_cols, i);
-                imshow(images{i});
+                imshow(images{i}, []);
                 title(image_titles{i});
             end
+        end
+
+        function [overlap, mask] = is_overlapped(mask1, mask2)
+            % find intersection mask
+            mask = mask1 & mask2;
+        
+            % Check if the masks overlap or not
+            overlap = sum(mask(:)) > 0;
         end
 
     end
