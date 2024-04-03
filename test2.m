@@ -2,7 +2,7 @@ close all;
 
 %% Dispoable
 % org_img = imread('gloves/disposable/1.jpeg');
-org_img = imread('gloves/disposable/2.png');
+% org_img = imread('gloves/disposable/2.png');
 % org_img = imread('gloves/disposable/3.jpg');
 % org_img = imread('gloves/disposable/4.png');
 % org_img = imread('gloves/disposable/5.png');
@@ -17,7 +17,7 @@ org_img = imread('gloves/disposable/2.png');
 % org_img = imread('gloves/leather/1.jpg');
 % org_img = imread('gloves/leather/2.jpg');
 % org_img = imread('gloves/leather/3.jpg');
-% org_img = imread('gloves/leather/4.jpg');
+org_img = imread('gloves/leather/4.jpg');
 
 %% Main
 gray_img = preprocessing(org_img);
@@ -43,15 +43,3 @@ glove_mean_rgb = calculate_mean_glove_color(lab_img, glove_mask);
 
 % Highlight defects according to categories
 highlighted_img = highlight_defects(org_img, defect_names, defect_boxes);
-
-
-
-
-
-
-
-
-
-
-
-
