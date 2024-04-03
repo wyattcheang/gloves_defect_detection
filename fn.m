@@ -27,7 +27,7 @@ classdef fn
             [defects_img, ~] = detect_defects(img, glove_mean_rgb);
 
             % Classify defects - stain / tearing / finger not enough
-            [defect_names, defect_boxes] = classify_defects(org_img, defects_img, palm_mask, finger_mask, object_area);
+            [defect_names, defect_boxes] = defect_classification(org_img, defects_img, palm_mask, finger_mask, object_area);
 
             % Highlight defects according to categories
             img = highlight_defects(org_img, defect_names, defect_boxes);

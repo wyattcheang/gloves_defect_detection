@@ -1,7 +1,7 @@
 %% Classify defects
-function [defect_names, defect_bboxes] = classify_defects(org_img, defects_img, palm_mask, finger_mask, object_area)
+function [defect_names, defect_bboxes] = defect_classification(org_img, defects_img, palm_mask, finger_mask, object_area)
 
-% Get skin mask to identify tearing / finger not enough regions
+% Get skin mask to identify tearing, finger not enough, holes regions
 skin_mask = detect_skin(defects_img, object_area);
 skin_mask_rgb = repmat(skin_mask, [1, 1, size(defects_img, 3)]);
 
