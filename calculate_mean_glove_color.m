@@ -36,13 +36,4 @@ fprintf('Mean color of the glove: L = %.2f, A = %.2f, B = %.2f\n', mean_L, mean_
 glove_mean_lab = [mean_L, mean_A, mean_B];
 glove_mean_rgb = lab2rgb(glove_mean_lab);
 
-% % Create a blank image with the same size as the original image
-% result_image = zeros(size(lab_img), 'uint8');
-% 
-% % Fill the image with the mean RGB color
-% result_image(:,:,1) = glove_mean_rgb(1) * 255;
-% result_image(:,:,2) = glove_mean_rgb(2) * 255;
-% result_image(:,:,3) = glove_mean_rgb(3) * 255;
-% 
-% figure('Name','Detect Glove Color'), imshow(result_image), title('Mean color (RGB)');
 end
