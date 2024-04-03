@@ -14,11 +14,10 @@ org_img = imread('gloves/disposable/2.png');
 % org_img = imread('gloves/cotton/4.jpg');
 
 %% Leather
-% % org_img = imread('gloves/leather/1.jpg');
+% org_img = imread('gloves/leather/1.jpg');
 % org_img = imread('gloves/leather/2.jpg');
 % org_img = imread('gloves/leather/3.jpg');
-% % org_img = imread('gloves/leather/4.png');
-% org_img = imread('gloves/leather/5.jpg');
+% org_img = imread('gloves/leather/4.jpg');
 
 %% Main
 gray_img = preprocessing(org_img);
