@@ -72,7 +72,7 @@ elseif cc.NumObjects > 20
 else
     min_area_threshold = object_area * 0.006;
 end
-print_title_value_pairs({'object_area', 'min area threshold'}, {object_area, min_area_threshold});
+fn.print_title_value_pairs({'object_area', 'min area threshold'}, {object_area, min_area_threshold});
 
 % defect_region -> based on the binary_mask
 % Cropped_defect_mask -> based on the morph_mask
@@ -167,7 +167,7 @@ for i = 1:cc.NumObjects
                 end
             end
         end
-        print_title_value_pairs({'Circularity', 'Area', 'Color Per Area'},{circularity, defect_area, color_per_area});
+        fn.print_title_value_pairs({'Circularity', 'Area', 'Color Per Area'},{circularity, defect_area, color_per_area});
         fn.auto_plot_images(defect_figure_title, {'Defect Area', 'Morph Defect Area', 'cropped_colored_defect'}, {cropped_defect_mask, cropped_morph_defect_mask, cropped_colored_defect});
     end
 end
@@ -186,7 +186,7 @@ finger_holes_bboxes = finger_holes_bboxes(any(finger_holes_bboxes, 2), :);
 defect_names = {'Palm Tearing', 'Finger Not Enough', 'Stain', 'Dirty', 'Hole', 'Stain (Finger)', 'Dirty (Finger)', 'Hole (Finger)'};
 defect_bboxes = {palm_bboxes, fne_bboxes, stain_bboxes, dirty_bboxes, holes_bboxes, finger_stain_bboxes, finger_dirty_bboxes, finger_holes_bboxes};
 defect_counts = {palm_tearing_count, fne_count, stain_count, dirty_count, holes_count, finger_stain_count, finger_dirty_count, finger_holes_count};
-print_title_value_pairs(defect_names, defect_counts);
+fn.print_title_value_pairs(defect_names, defect_counts);
 end
 
 function [tearing_count, tearing_bboxes, hole_count, hole_bboxes] = skin_area_defect_count(mask, object_area, ratio)
@@ -206,7 +206,7 @@ for i = 1:cc.NumObjects
     circularity = status(i).Circularity;
     defect_area = status(i).Area;
     bbox = status(i).BoundingBox;
-    print_title_value_pairs({'Circularity', 'Area'},{circularity, defect_area});
+    fn.print_title_value_pairs({'Circularity', 'Area'},{circularity, defect_area});
 
     if defect_area >= ratio * object_area
         % Increment count
@@ -229,19 +229,6 @@ unique_colors = unique(pixels, 'rows');
 
 % Count the number of unique colors
 num_colors = size(unique_colors, 1);
-end
-
-function print_title_value_pairs(titles, values)
-% Check if the number of titles matches the number of values
-if numel(titles) ~= numel(values)
-    error('Number of titles must match number of values');
-end
-
-% Print title-value pairs
-for i = 1:numel(titles)
-    fprintf('%s = %d\n', titles{i}, values{i});
-end
-fprintf('\n');
 end
 
 

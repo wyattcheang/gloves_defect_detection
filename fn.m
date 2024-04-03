@@ -85,8 +85,8 @@ classdef fn
             
             % Determine the number of rows and columns for the subplot layout
             num_images = numel(images);
-            num_rows = ceil(sqrt(num_images));
-            num_cols = ceil(num_images / num_rows);
+            num_cols = ceil(sqrt(num_images));
+            num_rows = ceil(num_images / num_cols);
             
             % Plot each image with its title
             for i = 1:num_images
@@ -94,6 +94,19 @@ classdef fn
                 imshow(images{i}, []);
                 title(image_titles{i});
             end
+        end
+
+        function print_title_value_pairs(titles, values)
+            % Check if the number of titles matches the number of values
+            if numel(titles) ~= numel(values)
+                error('Number of titles must match number of values');
+            end
+            
+            % Print title-value pairs
+            for i = 1:numel(titles)
+                fprintf('%s = %d\n', titles{i}, values{i});
+            end
+            fprintf('\n');
         end
 
         function [overlap, mask] = is_overlapped(mask1, mask2)
