@@ -2,7 +2,7 @@
 function [defects_img, defect_free_mask] = detect_defects(img, glove_mean_rgb)
 
 % Compute color difference (Delta E) between image and reference color
-de = deltaE(img, glove_mean_rgb);
+de = imcolordiff(img, glove_mean_rgb);
 
 % Apply threshold to Delta E values to segment the image
 deltaE_threshold = 25;
