@@ -1,6 +1,6 @@
 %% Detect skin regions based on the YCbCr color space and predefined color thresholds.
-
 function mask = detect_skin(img, object_area)
+
     % Convert RGB to YCbCr color space
     ycbcr_img = rgb2ycbcr(img);
     

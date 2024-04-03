@@ -1,5 +1,4 @@
 %% Detect defects utilizing Delta E
-
 function [defects_img, defect_free_mask] = detect_defects(img, glove_mean_rgb)
 
 % Compute color difference (Delta E) between image and reference color

@@ -5,7 +5,6 @@ refined_mask = imopen(mask, strel('diamond', 10));
 refined_mask = imfill(refined_mask, "holes");
 refined_mask = imfill(refined_mask, "holes");
 
-
 % Get the palm from binary mask.
 area = bwarea(refined_mask);
 ratio = 5.0; % claculate base of testing

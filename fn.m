@@ -1,7 +1,5 @@
 classdef fn
     methods (Static)
-        % TODO: Remove unused functions
-
         function img = gloves_defects_detection(org_img)
             close all;
             
@@ -47,10 +45,6 @@ classdef fn
                 img = cat(3, img, img, img);
             end
         end
-
-        % function img = applied_mask(src, mask)
-        %     img = bsxfun(@times, src, cast(mask,class(src)));
-        % end
 
         function img = applied_mask(src, mask)
             % Convert the mask to the same class as the source image
@@ -103,7 +97,7 @@ classdef fn
         end
 
         function [overlap, mask] = is_overlapped(mask1, mask2)
-            % find intersection mask
+            % Find intersection mask
             mask = mask1 & mask2;
         
             % Check if the masks overlap or not

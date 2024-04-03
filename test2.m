@@ -27,22 +27,22 @@ gray_img = preprocessing(org_img);
 lab_img = rgb2lab(img);
 object_area = bwarea(mask);
 
-%% Palm Finger Extraction
+% Palm Finger Extraction
 [palm_mask, finger_mask] = part_extraction(mask);
 
-%% Extract glove segment
+% Extract glove segment
 glove_mask = detect_glove(img);
 
-%% Get average glove color
+% Get average glove color
 glove_mean_rgb = calculate_mean_glove_color(lab_img, glove_mask);
 
-%% Detect defects
+% Detect defects
 [defects_img, defect_free_mask] = detect_defects(img, glove_mean_rgb);
 
-%% Classify defects 
-[defect_names, defect_boxes] = classify_defects(org_img, defects_img, palm_mask, finger_mask, object_area, glove_mean_rgb);
+% Classify defects 
+[defect_names, defect_boxes] = classify_defects(org_img, defects_img, palm_mask, finger_mask, object_area);
 
-%% Highlight defects according to categories
+% Highlight defects according to categories
 highlighted_img = highlight_defects(org_img, defect_names, defect_boxes);
 
 
