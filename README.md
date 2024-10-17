@@ -14,7 +14,7 @@ Employs threshold and edge segmentation, with the Canny edge detector offering h
 Utilizes part extraction and K-means clustering for glove color analysis, along with Delta E color difference calculations to detect defects.
 
 ## Key Features
-•	Image preprocessing and enhancement techniques
-•	Advanced segmentation methods for defect identification
-•	Color-based defect detection using Delta E and K-means clustering
-•	User-friendly graphical interface for glove image analysis
+- Image preprocessing and enhancement techniques
+- Advanced segmentation methods for defect identification
+- Color-based defect detection using Delta E and K-means clustering
+- User-friendly graphical interface for glove image analysis
